@@ -3,9 +3,11 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
+
 load_dotenv()
 
 Base = declarative_base()
+
 
 class Vacancy(Base):
     __tablename__ = "vacancies"
@@ -16,6 +18,7 @@ class Vacancy(Base):
     created_at = Column(String, nullable=False)
     url = Column(String, nullable=False)
     source = Column(String, nullable=True)
+
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 

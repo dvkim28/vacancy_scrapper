@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from main.vacancy_model import DATABASE_URL
+from db.vacancy_model import DATABASE_URL
 
-from main.vacancy_model import Vacancy
+from db.vacancy_model import Vacancy
 
 engine = create_engine(DATABASE_URL)
 
