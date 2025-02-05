@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
 from bd.management import add_vacancy_record, get_all_vacancies
+from tasks import send_telegram_message
 
 load_dotenv()
 
@@ -15,15 +16,16 @@ WORK_UA_URL = "https://www.work.ua"
 WORK_UA_VAC = os.getenv("WORK_UA_VAC")
 
 
-def parse_work_ua(url: None):
-    if url:
+def parse_work_ua(url=None):
+    if not url:
+        url = WORK_UA_VAC
         all_vacancies = []
         next_pg = True
         while next_pg:
             try:
                 time.sleep(random.uniform(0.1, 1))
                 response = requests.get(url)
-                if response.status_code == 200:  # Добавлена проверка на успешный ответ
+                if response.status_code == 200:
                     soup = BeautifulSoup(response.text, "html.parser")
                     vacancies = soup.find_all("div", {"class": "card"})
                     all_vacancies.extend(vacancies)
@@ -131,15 +133,12 @@ def parse_single_vacancy(vacancy_link):
 
 def add_record_to_bd(list):
     existing_vacancies = get_all_vacancies()
-    new_records = [
-        vac
-        for vac in list
-        if (vac["title"], vac["company"], vac["description"]) not in existing_vacancies
-    ]
+    new_records = [vac for vac in list if (vac["source"]) not in existing_vacancies]
 
     if new_records:
         for record in new_records:
             add_vacancy_record(record)
+            send_telegram_message(record)
 
 
 if __name__ == "__main__":

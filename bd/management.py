@@ -17,10 +17,6 @@ def add_vacancy_record(dic):
 
 def get_all_vacancies():
     session = Session()
-    existing_vacancies = set(
-        (vac.title, vac.company, vac.description, vac.date)
-        for vac in session.query(
-            Vacancy.title, Vacancy.company, Vacancy.description, Vacancy.date
-        ).all()
-    )
+    existing_vacancies = [vac.source for vac in session.query(Vacancy.source).all()]
+
     return existing_vacancies
